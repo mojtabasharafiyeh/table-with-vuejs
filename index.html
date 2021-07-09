@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+  <body>
+    
+    <div class="container" id="app">
+      <div class="d-flex justify-content-start mt-4"  >
+        <div>{{errorMessage}}</div>
+        <ul class="bg-primary text-white m-4"  v-for="(select,id) in selected"  :key="id">
+          <li>{{selected[id].name}}</li>
+          <li>{{selected[id].phone}}</li>
+          <div @click="deleteUser(index)">
+            <span class="fa fa-trash pointer"></span>
+          </div>
+        </ul>
+  
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">name</th>
+            <th scope="col">username</th>
+            <th scope="col">address</th>
+            <th scope="col">phone</th>
+            <th scope="col">action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(user,index) in users" :key="user.id">
+            <th scope="row">{{index+1}}</th>
+            <td>{{user.name}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.address.street}},{{user.address.suite}},{{user.address.city}}</td>
+            <td>{{user.phone}}</td>
+            <td>
+              <a @click="getSelected(index,user)" class="text-success ">
+                <i class="fas fa-edit"></i>
+
+              </a>
+              </div>
+            </td>
+        </tbody>
+      </table>
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          users: [],
+          selected:[],
+          errorMessage : null
+        },
+        methods:{
+          getAllUsers(){
+            axios.get("https://jsonplaceholder.typicode.com/users").then(response => { 
+                this.users=response.data; 
+              console.log(response);
+              console.log(this.users)
+            })
+            .catch(error => {
+              console.log(error);
+            });
+          },
+          getSelected(index,user){
+            console.log(this.users);
+            // console.log(this.selected);
+            if(this.selected.length >= 5) {
+              this.errorMessage = 'you must suck my dick'
+            } 
+            else if(this.selected.length < 5) {
+              this.selected.push(user);
+            }
+            // console.log(index);
+            // console.log(user);
+            console.log(this.selected);
+
+
+          },
+          deleteUser(index) {
+      this.selected.splice(index, 1);
+    },
+
+        },
+        mounted: function () {
+         this.getAllUsers();
+         this.getSelected();
+         this.deleteUser();
+        },
+      });
+    </script>
+  </body>
+</html>
